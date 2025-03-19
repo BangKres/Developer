@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Member</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .container {
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        #pasFoto {
+            max-width: 200px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #processingText {
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #444;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #ffcc00;
+            border-radius: 10px;
+            transition: width 1s linear;
+        }
+
+        #countdown {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            display: none;
+        }
+
+        #deleteButton, #downloadButton {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #deleteButton {
+            background-color: red;
+            color: white;
+        }
+
+        #downloadButton {
+            background-color: green;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Kartu SIM</h1>
+    <div class="container">
+        <h2>Pas Foto</h2>
+        <p id="processingText">Foto Sedang Diproses...</p>
+        <img id="pasFoto" alt="Pas Foto">
+        <button id="deleteButton">Hapus Foto</button>
+        <button id="downloadButton">Download Foto</button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p id="countdown">120 Detik</p>
+    </div>
+
+    <script>
+        const adminCode = "BangKres21"; // Kode akses admin
+        const pasFoto = localStorage.getItem("pas_foto");
+        const userCode = prompt("Ketik Pesan Proses");
+
+        if (userCode === adminCode) {
+            // Admin bisa melihat, menghapus, dan mendownload foto
+            if (pasFoto) {
+                document.getElementById("pasFoto").src = pasFoto;
+                document.getElementById("pasFoto").style.display = "block";
+                document.getElementById("processingText").style.display = "none";
+                document.getElementById("deleteButton").style.display = "block";
+                document.getElementById("downloadButton").style.display = "block";
+            }
+
+            document.getElementById("deleteButton").addEventListener("click", function() {
+                localStorage.removeItem("pas_foto");
+                document.getElementById("pasFoto").style.display = "none";
+                document.getElementById("deleteButton").style.display = "none";
+                document.getElementById("downloadButton").style.display = "none";
+                alert("Foto berhasil dihapus!");
+            });
+
+            document.getElementById("downloadButton").addEventListener("click", function() {
+                const link = document.createElement("a");
+                link.href = pasFoto;
+                link.download = "pas_foto.png";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+        } else {
+            // Member hanya melihat progress bar & countdown
+            document.querySelector(".progress-container").style.display = "block";
+            document.getElementById("countdown").style.display = "block";
+
+            let countdownTime = 120;
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 100 / 120;
+                countdownTime -= 1;
+                document.getElementById("progressBar").style.width = progress + "%";
+                document.getElementById("countdown").innerText = countdownTime + " Detik";
+
+                if (countdownTime <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "CATEGORY_SIM.html";
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>

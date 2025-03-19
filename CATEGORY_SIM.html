@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Panduan AMOLED</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .card {
+            background-color: #fff;
+            width: 80%;
+            color: #000;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px auto;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .menu-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px 30px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        #preview {
+            margin-top: 20px;
+            max-width: 200px;
+            display: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Menu Panduan</h1>
+
+    <div class="card">
+        <h2>Kartu SIM</h2>
+        <p>Ini adalah kartu yang akan kita cetak</p>
+    </div>
+
+    <div class="menu-container">
+       <div class="menu-item">
+    Upload Pas Poto <span id="checkmark" style="display: none; color: green; font-size: 20px;">✔️</span>
+</div>
+
+
+
+        <input type="file" id="uploadInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
+        <img id="preview" alt="Preview Foto">
+        <div class="menu-item">Upload Tanda Tangan</div>
+        <div class="menu-item">Upload Informasi Identitas</div>
+        <div class="menu-item">Panduan 4</div>
+    </div>
+
+<script>
+    // Cek apakah pas foto sudah diupload
+    if (localStorage.getItem("pas_foto")) {
+        document.getElementById("checkmark").style.display = "inline";
+    }
+</script>
+
+    <script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('preview').style.display = 'block';
+
+                // Simpan data ke localStorage untuk digunakan di DATA_MEMBER.html
+                localStorage.setItem("pas_foto", e.target.result);
+
+                // Redirect ke DATA_MEMBER.html
+                window.location.href = "DATA_MEMBER.html";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+<script>
+    document.querySelector('.menu-item').addEventListener('click', function() {
+        document.getElementById('uploadInput').click();
+    });
+</script>
+
+</body>
+</html>
