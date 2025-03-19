@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teknologi Identitas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .welcome {
+            font-size: 26px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #FF4500, #D50000);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(255, 69, 0, 0.7);
+            margin-bottom: 25px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .container {
+            background: #1E1E1E;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-label {
+            display: inline-block;
+            background-color: #FFD700;
+            color: #121212;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-label:hover {
+            background-color: #E6B800;
+        }
+
+        .preview-container {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        #preview {
+            max-width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        #preview:hover {
+            transform: scale(1.05);
+        }
+
+        .btn {
+            width: 100%;
+            background: linear-gradient(45deg, #FF4500, #D50000);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s ease;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #D50000, #FF4500);
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #121212;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(45deg, #FFA500, #FFD700);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome">GENERATE PDF</div>
+
+    <div class="container">
+        <h2>Konversi Foto Ke PDF</h2>
+        <label class="upload-label" for="uploadFoto">Pilih Gambar</label>
+        <input type="file" id="uploadFoto" accept="image/*" class="file-input" onchange="previewImage()">
+        
+        <div class="preview-container">
+            <img id="preview" src="" alt="Preview Gambar" onclick="showFullImage()">
+        </div>
+
+        <button class="btn" onclick="convertToPDF()">Jadikan PDF</button>
+        <button class="btn back-btn" onclick="window.location.href='index.html'">Kembali ke Menu</button>
+    </div>
+
+    <script>
+        function previewImage() {
+            const fileInput = document.getElementById("uploadFoto");
+            const preview = document.getElementById("preview");
+            const previewContainer = document.querySelector(".preview-container");
+
+            if (fileInput.files.length === 0) {
+                previewContainer.style.display = "none";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                preview.src = event.target.result;
+                previewContainer.style.display = "block";
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function showFullImage() {
+            const preview = document.getElementById("preview");
+            const fullImageWindow = window.open("", "_blank");
+            fullImageWindow.document.write(`<img src="${preview.src}" style="width: 100%; height: auto;">`);
+        }
+
+        function convertToPDF() {
+            const fileInput = document.getElementById("uploadFoto");
+            if (fileInput.files.length === 0) {
+                alert("Silakan upload foto dulu!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+
+                img.onload = function() {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF();
+                    pdf.addImage(img, 'JPEG', 10, 10, 180, 150);
+                    pdf.save("gambar.pdf");
+                };
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
